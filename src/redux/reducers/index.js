@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
 import loginRedux from './login';
-import tokenRedux from './token';
+import token from './token';
 
 const rootReducer = combineReducers({
   loginRedux,
-  tokenRedux,
+  token,
 });
 
 export default rootReducer;

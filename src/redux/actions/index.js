@@ -1,3 +1,5 @@
+import fetchAPI from '../../service/fetchAPI';
+
 export const TYPE_NAME = 'TYPE_NAME';
 export const TYPE_EMAIL = 'TYPE_EMAIL';
 export const TYPE_TOKEN = 'TYPE_TOKEN';
@@ -14,7 +16,25 @@ export const loginEmail = (email) => ({
   payload: email,
 });
 
-export const tokenAPI = (token) => ({
+export const tokenAPI = () => ({
+  type: TYPE_TOKEN,
+});
+
+export const tokenAPISucces = (token) => ({
   type: TYPE_TOKEN_SUCCES,
   payload: token,
 });
+
+export const tokenAPIError = (error) => ({
+  type: TYPE_ERROR,
+  payload: error,
+});
+
+export const tokenThunk = () => async (dispatch) => {
+  try {
+    const response = await fetchAPI();
+    return dispatch(tokenAPISucces(response));
+  } catch (error) {
+    dispatch(tokenAPIError(error));
+  }
+};
