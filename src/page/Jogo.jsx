@@ -17,9 +17,8 @@ class Jogo extends React.Component {
   }
 
   render() {
-    const { history } = this.props;
     return (
-      <Header history={ history } />
+      <Header />
     );
   }
 }
