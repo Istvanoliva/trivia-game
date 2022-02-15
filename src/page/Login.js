@@ -14,11 +14,7 @@ class Login extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.validateButton = this.validateButton.bind(this);
-  }
-
-  validateButton() {
-    const { nome, email } = this.state;
-    if (nome && email) this.setState({ disabled: false });
+    this.handleSettingsClick = this.handleSettingsClick.bind(this);
   }
 
   handleChange({ target: { value, name } }) {
@@ -33,6 +29,16 @@ class Login extends React.Component {
     loginEmailDispatch(email);
     loginNameDispatch(nome);
     history.push('/jogo');
+  }
+
+  handleSettingsClick() {
+    const { history } = this.props;
+    history.push('/settings');
+  }
+
+  validateButton() {
+    const { nome, email } = this.state;
+    if (nome && email) this.setState({ disabled: false });
   }
 
   render() {
@@ -69,13 +75,20 @@ class Login extends React.Component {
         >
           Play
         </button>
+        <button
+          onClick={ this.handleSettingsClick }
+          data-testid="btn-settings"
+          type="button"
+        >
+          Configuração
+        </button>
       </form>
     );
   }
 }
 
 Login.propTypes = {
-  history: PropTypes.string,
+  history: PropTypes.shape({ push: PropTypes.func.isRequired }),
   setTokenDispatch: PropTypes.func,
 }.isRequired;
 
