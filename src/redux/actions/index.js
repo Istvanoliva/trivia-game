@@ -13,6 +13,6 @@ export const loginEmail = (email) => ({
 });
 
 export const tokenAPI = (token) => ({
-  type: TYPE_EMAIL,
+  type: TYPE_TOKEN,
   token,
 });

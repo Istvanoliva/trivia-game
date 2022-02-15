@@ -9,7 +9,7 @@ const tokenRedux = (state = INITIAL_STATE, { type, payload }) => {
   case TYPE_TOKEN:
     return {
       ...state,
-      token: payload,
+      payload,
     };
   default:
     return state;
