@@ -1,6 +1,8 @@
 export const TYPE_NAME = 'TYPE_NAME';
 export const TYPE_EMAIL = 'TYPE_EMAIL';
 export const TYPE_TOKEN = 'TYPE_TOKEN';
+export const TYPE_TOKEN_SUCCES = 'TYPE_TOKEN_SUCCES';
+export const TYPE_ERROR = 'TYPE_ERROR';
 
 export const loginName = (nome) => ({
   type: TYPE_NAME,
@@ -13,6 +15,6 @@ export const loginEmail = (email) => ({
 });
 
 export const tokenAPI = (token) => ({
-  type: TYPE_EMAIL,
-  token,
+  type: TYPE_TOKEN_SUCCES,
+  payload: token,
 });
