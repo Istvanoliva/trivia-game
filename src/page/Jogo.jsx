@@ -1,4 +1,5 @@
 import React from 'react';
+import fetchAPI from '../service/fetchAPI';
 
 class Jogo extends React.Component {
   // constructor() {
@@ -9,16 +10,9 @@ class Jogo extends React.Component {
   //   };
   // }
 
-  // componentDidMount = () => {
-  //   this.fetchAPI();
-  // }
-
-  // fetchAPI = async () => {
-  //   const fetchURL = await fetch(URL);
-  //   const response = await fetchURL.json();
-  //   const { token } = response;
-  //   this.setState({ token });
-  // }
+  componentDidMount = () => {
+    fetchAPI();
+  }
 
   render() {
     return (

@@ -1,19 +1,24 @@
-import { TYPE_TOKEN } from '../actions';
+import { TYPE_ERROR, TYPE_TOKEN, TYPE_TOKEN_SUCCES } from '../actions';
 
 const INITIAL_STATE = {
   token: '',
+  error: '',
 };
 
-const tokenRedux = (state = INITIAL_STATE, { type, payload }) => {
-  switch (type) {
+const token = (state = INITIAL_STATE, action) => {
+  switch (action.type) {
   case TYPE_TOKEN:
+    return { ...state };
+  case TYPE_TOKEN_SUCCES:
+    return action.payload;
+  case TYPE_ERROR:
     return {
       ...state,
-      payload,
+      error: action.payload,
     };
   default:
     return state;
   }
 };
 
-export default tokenRedux;
+export default token;
