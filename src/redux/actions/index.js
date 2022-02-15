@@ -6,6 +6,8 @@ export const TYPE_TOKEN = 'TYPE_TOKEN';
 export const TYPE_TOKEN_SUCCES = 'TYPE_TOKEN_SUCCES';
 export const TYPE_ERROR = 'TYPE_ERROR';
 
+export const TYPE_USER_INFOS = 'TYPE_USER_INFOS';
+
 export const loginName = (nome) => ({
   type: TYPE_NAME,
   payload: nome,
@@ -38,3 +40,11 @@ export const tokenThunk = () => async (dispatch) => {
     dispatch(tokenAPIError(error));
   }
 };
+
+export const userInfos = (name, assertions, score, gravatarEmail) => ({
+  type: TYPE_USER_INFOS,
+  name,
+  assertions,
+  score,
+  gravatarEmail,
+});
