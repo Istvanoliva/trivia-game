@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { loginName, loginEmail } from '../redux/actions';
+import PropTypes from 'prop-types';
+import { loginName, loginEmail, tokenThunk } from '../redux/actions';
 
 class Login extends React.Component {
   constructor() {
@@ -25,7 +26,13 @@ class Login extends React.Component {
   }
 
   handleClick() {
-    console.log('clicou');
+    const { history,
+      setTokenDispatch, loginEmailDispatch, loginNameDispatch } = this.props;
+    const { nome, email } = this.state;
+    setTokenDispatch();
+    loginEmailDispatch(email);
+    loginNameDispatch(nome);
+    history.push('/jogo');
   }
 
   render() {
@@ -66,8 +73,15 @@ class Login extends React.Component {
     );
   }
 }
+
+Login.propTypes = {
+  history: PropTypes.string,
+  setTokenDispatch: PropTypes.func,
+}.isRequired;
+
 const mapDispatchToProps = (dispatch) => ({
   loginNameDispatch: (nome) => dispatch(loginName(nome)),
   loginEmailDispatch: (email) => dispatch(loginEmail(email)),
+  setTokenDispatch: () => dispatch(tokenThunk()),
 });
 export default connect(null, mapDispatchToProps)(Login);
