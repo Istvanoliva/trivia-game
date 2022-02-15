@@ -41,7 +41,7 @@ export const tokenThunk = () => async (dispatch) => {
   }
 };
 
-export const userInfos = ( name, assertions, score, gravatarEmail ) => ({
+export const userInfos = (name, assertions, score, gravatarEmail) => ({
   type: TYPE_USER_INFOS,
   name,
   assertions,
