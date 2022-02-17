@@ -97,4 +97,5 @@ const mapDispatchToProps = (dispatch) => ({
   loginEmailDispatch: (email) => dispatch(loginEmail(email)),
   setTokenDispatch: () => dispatch(tokenThunk()),
 });
+
 export default connect(null, mapDispatchToProps)(Login);
