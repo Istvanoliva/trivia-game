@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchAPI, fetchAPItest, fetchAsks } from '../service/fetchAPI';
+import { fetchAPItest, fetchAsks } from '../service/fetchAPI';
 import { newTokenRedux } from '../redux/actions';
 import Header from '../components/Header';
 
@@ -11,6 +11,8 @@ class Jogo extends React.Component {
     super();
     this.state = {
       results: [],
+      counter: 0,
+      answerss: [],
     };
   }
 
@@ -19,35 +21,40 @@ class Jogo extends React.Component {
   }
 
   validateToken = async () => {
-    const { tokenRandom, dispatchToken } = this.props;
-    await fetchAPItest();
-    const results = await fetchAsks(localStorage.getItem('token'));
+    const token = await fetchAPItest();
+    const results = await fetchAsks(token.token);
     const three = 3;
     if (results.response_code === three) {
-      console.log('entrei2');
-     const resquestToken = await fetchAPI();
       const newToken = localStorage.getItem('token');
-      await dispatchToken(resquestToken.token);
-      const newResults = await fetchAsks(resquestToken.token);
+      const newResults = await fetchAsks(newToken);
       return this.setState({
         results: newResults.results,
       });
     }
-    console.log('entrei1');
     this.setState({
       results: results.results,
     });
   }
 
+   counterAsks = () => {
+   const { results } = this.state;
+   const answers = results.map((answer) => ([
+   answer.correct_answer, ...answer.incorrect_answers,
+   ]));
+   this.setState({
+     answerss: answers,
+   });
+   }
+
   render() {
-    const { results } = this.state;
-    console.log(results);
+    const { results, answerss, counter } = this.state;
+    console.log(answerss);
     const resultsLength = results.length !== 0;
     return (
       <>
         <Header />
         <main>
-          { resultsLength && results.map((result) => (
+          { resultsLength && results[counter].map((result) => (
             <div key={ Math.random() }>
               <h4 data-testid="question-category">
                 {result.category}
@@ -59,24 +66,25 @@ class Jogo extends React.Component {
                 {result.question}
 
               </h3>
-              <button
+              {/* <button
                 data-testid="correct_answer"
                 type="button"
               >
                 {result.correct_answer}
 
-              </button>
+              </button> */}
               <div>
-                {result.incorrect_answers.map((answer, index) => (
+                {/* {answerss[counter].map((answer, index) => (
                   <section key={ index } data-testid="answer-options">
                     <button
+                      onClick={ this.counterAsks }
                       type="button"
                       data-testid={ `wrong-answer-${index}` }
                     >
                       {answer}
                     </button>
                   </section>
-                )).sort()}
+                )).sort()} */}
               </div>
             </div>
 
