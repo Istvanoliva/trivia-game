@@ -11,8 +11,6 @@ class Jogo extends React.Component {
     super();
     this.state = {
       results: [],
-      counter: 0,
-      answerss: [],
     };
   }
 
@@ -36,25 +34,38 @@ class Jogo extends React.Component {
     });
   }
 
-   counterAsks = () => {
-   const { results } = this.state;
-   const answers = results.map((answer) => ([
-   answer.correct_answer, ...answer.incorrect_answers,
-   ]));
-   this.setState({
-     answerss: answers,
-   });
+// https://www.horadecodar.com.br/2021/05/10/como-embaralhar-um-array-em-javascript-shuffle/
+     asksRandom = (resultsCorrect, incorrectResults) => {
+    const answer = [...incorrectResults, resultsCorrect];
+
+  for (let i = answer.length - 1; i > 0; i -= 1) {
+          // Escolhendo elemento aleatório
+      const j = Math.floor(Math.random() * (i + 1));
+      // Reposicionando elemento
+      [answer[i], answer[j]] = [answer[j], answer[i]];
+  }
+  // Retornando array com aleatoriedade
+  return answer;
+}
+
+   verificaCorreta(correctAnswer, answer, incorrectAnswers) {
+     console.log(incorrectAnswers, answer);
+    if (correctAnswer === answer) {
+     return 'correct-answer';
+    }
+    const index = incorrectAnswers.findIndex((incAnswe) => incAnswe === answer);
+    console.log(index);
+      return `wrong-answer-${index}`;
    }
 
   render() {
-    const { results, answerss, counter } = this.state;
-    console.log(answerss);
+    const { results } = this.state;
     const resultsLength = results.length !== 0;
     return (
       <>
         <Header />
         <main>
-          { resultsLength && results[counter].map((result) => (
+          { resultsLength && results.map((result) => (
             <div key={ Math.random() }>
               <h4 data-testid="question-category">
                 {result.category}
@@ -66,25 +77,19 @@ class Jogo extends React.Component {
                 {result.question}
 
               </h3>
-              {/* <button
-                data-testid="correct_answer"
-                type="button"
-              >
-                {result.correct_answer}
-
-              </button> */}
               <div>
-                {/* {answerss[counter].map((answer, index) => (
+                {this.asksRandom(result.correct_answer, result.incorrect_answers)
+                .map((answer, index) => (
                   <section key={ index } data-testid="answer-options">
                     <button
-                      onClick={ this.counterAsks }
                       type="button"
-                      data-testid={ `wrong-answer-${index}` }
+                      data-testid={ this.verificaCorreta(result.correct_answer, answer, result.incorrect_answers) }
                     >
                       {answer}
                     </button>
                   </section>
-                )).sort()} */}
+                 ))}
+
               </div>
             </div>
 
