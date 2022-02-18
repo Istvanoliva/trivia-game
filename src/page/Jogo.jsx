@@ -65,25 +65,27 @@ class Jogo extends React.Component {
       <>
         <Header />
         <main>
-          { resultsLength && results.map((result) => (
+          { resultsLength && (
             <div key={ Math.random() }>
               <h4 data-testid="question-category">
-                {result.category}
+                {results[0].category}
               </h4>
               <h3
-                key={ result.question }
+                key={ results[0].question }
                 data-testid="question-text"
               >
-                {result.question}
+                {results[0].question}
 
               </h3>
               <div>
-                {this.asksRandom(result.correct_answer, result.incorrect_answers)
-                .map((answer, index) => (
+                {this.asksRandom(results[0].correct_answer,
+                results[0].incorrect_answers).map((answer, index) => (
                   <section key={ index } data-testid="answer-options">
                     <button
                       type="button"
-                      data-testid={ this.verificaCorreta(result.correct_answer, answer, result.incorrect_answers) }
+                      data-testid={ this.verificaCorreta(results[0].correct_answer,
+                        answer,
+                        results[0].incorrect_answers) }
                     >
                       {answer}
                     </button>
@@ -93,7 +95,7 @@ class Jogo extends React.Component {
               </div>
             </div>
 
-          ))}
+          )}
         </main>
 
       </>
