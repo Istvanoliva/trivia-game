@@ -34,7 +34,7 @@ class Jogo extends React.Component {
     });
   }
 
-// https://www.horadecodar.com.br/2021/05/10/como-embaralhar-um-array-em-javascript-shuffle/
+  // https://www.horadecodar.com.br/2021/05/10/como-embaralhar-um-array-em-javascript-shuffle/
      asksRandom = (resultsCorrect, incorrectResults) => {
     const answer = [...incorrectResults, resultsCorrect];
 
