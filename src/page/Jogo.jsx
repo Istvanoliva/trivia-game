@@ -49,13 +49,6 @@ class Jogo extends React.Component {
     return answer;
   };
 
-  setColotButton = () => {
-    this.setState({
-      incorreta: 'red',
-      correta: 'green',
-    });
-  };
-
   verificaCorreta(correctAnswer, answer, incorrectAnswers) {
     console.log(incorrectAnswers, answer);
     if (correctAnswer === answer) {
@@ -67,7 +60,8 @@ class Jogo extends React.Component {
   }
 
   render() {
-    const { results, correta, incorreta } = this.state;
+    const { results, correta, incorreta, dificultyValue } = this.state;
+    console.log(results, dificultyValue);
     const resultsLength = results.length !== 0;
     return (
       <>
@@ -87,7 +81,7 @@ class Jogo extends React.Component {
                   // eslint-disable-next-line react/jsx-indent
                   <section key={ index } data-testid="answer-options">
                     <button
-                      onClick={ this.setColotButton }
+                      onClick={ this.updateScore }
                       className={
                         answer === results[0].correct_answer
                           ? `${correta}`
