@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -11,6 +10,8 @@ class Jogo extends React.Component {
     super();
     this.state = {
       results: [],
+      correta: '',
+      incorreta: '',
     };
   }
 
@@ -36,71 +37,87 @@ class Jogo extends React.Component {
 
   // https://www.horadecodar.com.br/2021/05/10/como-embaralhar-um-array-em-javascript-shuffle/
      asksRandom = (resultsCorrect, incorrectResults) => {
-    const answer = [...incorrectResults, resultsCorrect];
+       const answer = [...incorrectResults, resultsCorrect];
 
-  for (let i = answer.length - 1; i > 0; i -= 1) {
-          // Escolhendo elemento aleatório
-      const j = Math.floor(Math.random() * (i + 1));
-      // Reposicionando elemento
-      [answer[i], answer[j]] = [answer[j], answer[i]];
-  }
-  // Retornando array com aleatoriedade
-  return answer;
-}
+       for (let i = answer.length - 1; i > 0; i -= 1) {
+         // Escolhendo elemento aleatório
+         const j = Math.floor(Math.random() * (i + 1));
+         // Reposicionando elemento
+         [answer[i], answer[j]] = [answer[j], answer[i]];
+       }
+       // Retornando array com aleatoriedade
+       return answer;
+     }
 
-   verificaCorreta(correctAnswer, answer, incorrectAnswers) {
-     console.log(incorrectAnswers, answer);
-    if (correctAnswer === answer) {
-     return 'correct-answer';
-    }
-    const index = incorrectAnswers.findIndex((incAnswe) => incAnswe === answer);
-    console.log(index);
-      return `wrong-answer-${index}`;
-   }
+     setColotButton = () => {
+       this.setState({
+         incorreta: 'red',
+         correta: 'green',
+       });
+     }
 
-  render() {
-    const { results } = this.state;
-    const resultsLength = results.length !== 0;
-    return (
-      <>
-        <Header />
-        <main>
-          { resultsLength && (
-            <div key={ Math.random() }>
-              <h4 data-testid="question-category">
-                {results[0].category}
-              </h4>
-              <h3
-                key={ results[0].question }
-                data-testid="question-text"
-              >
-                {results[0].question}
+     verificaCorreta(correctAnswer, answer, incorrectAnswers) {
+       console.log(incorrectAnswers, answer);
+       if (correctAnswer === answer) {
+         return 'correct-answer';
+       }
+       const index = incorrectAnswers.findIndex((incAnswe) => incAnswe === answer);
+       console.log(index);
+       return `wrong-answer-${index}`;
+     }
 
-              </h3>
-              <div>
-                {this.asksRandom(results[0].correct_answer,
-                results[0].incorrect_answers).map((answer, index) => (
-                  <section key={ index } data-testid="answer-options">
-                    <button
-                      type="button"
-                      data-testid={ this.verificaCorreta(results[0].correct_answer,
-                        answer,
-                        results[0].incorrect_answers) }
-                    >
-                      {answer}
-                    </button>
-                  </section>
-                 ))}
+     render() {
+       const { results, correta, incorreta } = this.state;
+       const resultsLength = results.length !== 0;
+       return (
+         <>
+           <Header />
+           <main>
+             { resultsLength && (
+               <div key={ Math.random() }>
+                 <h4 data-testid="question-category">
+                   {results[0].category}
+                 </h4>
+                 <h3
+                   key={ results[0].question }
+                   data-testid="question-text"
+                 >
+                   {results[0].question}
 
-              </div>
-            </div>
+                 </h3>
+                 <div>
+                   {
+                     this.asksRandom(results[0].correct_answer,
+                       results[0].incorrect_answers).map((answer, index) => (
+                       // eslint-disable-next-line react/jsx-indent
+                       <section
+                         key={ index }
+                         data-testid="answer-options"
+                       >
+                         <button
+                           onClick={ this.setColotButton }
+                           className={ answer === results[0].correct_answer
+                             ? `${correta}` : `${incorreta}` }
+                           type="button"
+                           data-testid={ this.verificaCorreta(results[0].correct_answer,
+                             answer,
+                             results[0].incorrect_answers) }
+                         >
+                           {answer}
+                         </button>
+                       </section>
+                     ))
+                   }
 
-          )}
-        </main>
+                 </div>
+               </div>
 
-      </>
-    );
-  }
+             )}
+           </main>
+
+         </>
+       );
+     }
 }
 
 Jogo.propTypes = {
