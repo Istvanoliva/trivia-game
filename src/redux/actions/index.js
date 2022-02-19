@@ -6,8 +6,9 @@ export const TYPE_TOKEN = 'TYPE_TOKEN';
 export const TYPE_TOKEN_SUCCES = 'TYPE_TOKEN_SUCCES';
 export const TYPE_ERROR = 'TYPE_ERROR';
 export const TYPE_NEW_TOKEN = 'TYPE_NEW_TOKEN';
-
+export const TYPE_SAVE_SCORE = 'TYPE_SAVE_SCORE';
 export const TYPE_USER_INFOS = 'TYPE_USER_INFOS';
+export const TIME_COUNT_DOWN = 'TIME_COUNT_DOWN';
 
 export const newTokenRedux = (newToken) => ({
   type: TYPE_NEW_TOKEN,
@@ -54,4 +55,10 @@ export const userInfos = (name, assertions, score, gravatarEmail) => ({
   assertions,
   score,
   gravatarEmail,
+});
+
+export const timeCountDown = (timer, isDisabled) => ({
+  type: TIME_COUNT_DOWN,
+  timer,
+  isDisabled,
 });

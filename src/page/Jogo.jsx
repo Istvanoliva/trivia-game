@@ -5,6 +5,10 @@ import { fetchAPItest, fetchAsks } from '../service/fetchAPI';
 import { newTokenRedux } from '../redux/actions';
 import Header from '../components/Header';
 
+const HARD = 3;
+const MEDIUM = 2;
+const EASY = 1;
+
 class Jogo extends React.Component {
   constructor() {
     super();
@@ -35,6 +39,33 @@ class Jogo extends React.Component {
     });
   };
 
+  difficultLevel = () => {
+    const { results } = this.state;
+    const selectLevel = results[0].difficulty;
+    if (selectLevel === 'hard') return HARD;
+    if (selectLevel === 'medium') return MEDIUM;
+    if (selectLevel === 'easy') return EASY;
+  }
+
+  upDateScore = ({ target }) => {
+    const DEZ = 10;
+    const timer = 10;
+    const selectAnswer = target.getAttribute('data-testid').includes('correct');
+    if (selectAnswer) {
+      // const { timer } = this.state;
+      const score = (DEZ + (timer * this.difficultLevel()));
+      const userInfo = {
+        score,
+      };
+      localStorage.setItem('player', JSON.stringify(userInfo));
+    }
+    this.setState({
+      incorreta: 'red',
+      correta: 'green',
+    });
+  };
+  // localStorage.setItem('player', JSON.stringify(score));
+
   // https://www.horadecodar.com.br/2021/05/10/como-embaralhar-um-array-em-javascript-shuffle/
   asksRandom = (resultsCorrect, incorrectResults) => {
     const answer = [...incorrectResults, resultsCorrect];
@@ -50,12 +81,10 @@ class Jogo extends React.Component {
   };
 
   verificaCorreta(correctAnswer, answer, incorrectAnswers) {
-    console.log(incorrectAnswers, answer);
     if (correctAnswer === answer) {
       return 'correct-answer';
     }
     const index = incorrectAnswers.findIndex((incAnswe) => incAnswe === answer);
-    console.log(index);
     return `wrong-answer-${index}`;
   }
 
@@ -81,12 +110,14 @@ class Jogo extends React.Component {
                   // eslint-disable-next-line react/jsx-indent
                   <section key={ index } data-testid="answer-options">
                     <button
-                      onClick={ this.updateScore }
+                      name={ results[0].difficulty }
+                      onClick={ this.upDateScore }
                       className={
                         answer === results[0].correct_answer
                           ? `${correta}`
                           : `${incorreta}`
                       }
+                      // isDisabled={ isDisabled }
                       type="button"
                       data-testid={ this.verificaCorreta(
                         results[0].correct_answer,
