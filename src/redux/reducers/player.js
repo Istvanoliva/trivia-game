@@ -2,7 +2,7 @@ import { TYPE_USER_INFOS } from '../actions';
 
 const INITIAL_STATE = {
   name: '',
-  assertions: '',
+  assertions: 0,
   score: 0,
   gravatarEmail: '',
 };

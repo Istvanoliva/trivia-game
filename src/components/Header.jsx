@@ -6,9 +6,10 @@ import { timeCountDown, userInfos } from '../redux/actions';
 
 class Header extends React.Component {
   render() {
-    const { userEmailGravatar, userName, scoreUser, dispatchPlayer } = this.props;
+    const { userEmailGravatar, userName, scoreUser,
+      dispatchPlayer, assertions } = this.props;
     const hash = md5(userEmailGravatar).toString();
-    dispatchPlayer(userName, null, scoreUser, userEmailGravatar);
+    dispatchPlayer(userName, assertions, scoreUser, userEmailGravatar);
     return (
       <header>
         <img
@@ -26,11 +27,13 @@ class Header extends React.Component {
 
 const mapStateToProps = (state) => {
   const { loginRedux: { email, nome } } = state;
-  const { player: { score } } = state;
+  const { player: { score, assertions } } = state;
+  console.log(assertions);
   return {
     userEmailGravatar: email,
     userName: nome,
     scoreUser: score,
+    assertions,
   };
 };
 
