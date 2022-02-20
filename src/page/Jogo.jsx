@@ -99,6 +99,11 @@ class Jogo extends React.Component {
     return answer;
   };
 
+  onclick = () => {
+    const { history } = this.props;
+    history.push('/');
+  }
+
   verificaCorreta(correctAnswer, answer, incorrectAnswers) {
     if (correctAnswer === answer) {
       return 'correct-answer';
@@ -155,6 +160,15 @@ class Jogo extends React.Component {
           {incorreta !== '' && correta !== ''
             ? <button type="button" data-testid="btn-next">Next</button>
             : null}
+        </div>
+        <div>
+          <button
+            type="button"
+            onClick={ this.onclick }
+            data-testid="btn-play-again"
+          >
+            Play Again
+          </button>
         </div>
       </>
     );
