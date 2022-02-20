@@ -9,6 +9,7 @@ export const TYPE_NEW_TOKEN = 'TYPE_NEW_TOKEN';
 export const TYPE_SAVE_SCORE = 'TYPE_SAVE_SCORE';
 export const TYPE_USER_INFOS = 'TYPE_USER_INFOS';
 export const TIME_COUNT_DOWN = 'TIME_COUNT_DOWN';
+export const SECONDS = 'SECONDS';
 
 export const newTokenRedux = (newToken) => ({
   type: TYPE_NEW_TOKEN,

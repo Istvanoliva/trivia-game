@@ -16,12 +16,43 @@ class Jogo extends React.Component {
       results: [],
       correta: '',
       incorreta: '',
+      timer: 30,
+      isDisabled: false,
     };
   }
 
-  async componentDidMount() {
-    await this.validateToken();
+  componentDidMount() {
+    this.validateToken();
+    this.timer();
+    localStorage.setItem('player', [0]);
   }
+
+  // componentDidUpdate() {
+  //   this.stop();
+  // }
+
+  timer = () => {
+    const ONE_SECOND = 1000;
+    console.log(setInterval(() => {
+      console.log('interval');
+      const { timer } = this.state;
+      if (timer > 0) {
+        this.setState((prev) => ({ timer: prev.timer - 1 }));
+      } else {
+        this.setState({ isDisabled: timer === 0 });
+        // const setIntervalID = 5;
+        // if (timer === 0);
+        // clearInterval(setIntervalID);
+      }
+    }, ONE_SECOND));
+  }
+
+  // stop = () => {
+  //   const { timer } = this.state;
+  //   const setIntervalID = 6;
+  //   if (timer === 0);
+  //   clearInterval(setIntervalID);
+  // }
 
   validateToken = async () => {
     const token = await fetchAPItest();
@@ -48,20 +79,26 @@ class Jogo extends React.Component {
   }
 
   upDateScore = ({ target }) => {
-    const DEZ = 10;
-    const timer = 10;
-    const selectAnswer = target.getAttribute('data-testid').includes('correct');
-    if (selectAnswer) {
-      const score = (DEZ + (timer * this.difficultLevel()));
-      const userInfo = {
-        score,
-      };
-      localStorage.setItem('player', JSON.stringify(userInfo));
-    }
     this.setState({
       incorreta: 'red',
       correta: 'green',
     });
+
+    const DEZ = 10;
+    const { timer } = this.state;
+    const selectAnswer = target.getAttribute('data-testid').includes('correct');
+    if (selectAnswer) {
+      const newScore = (DEZ + (timer * this.difficultLevel()));
+      const get = localStorage.getItem('player');
+      const newPoints = [...get, newScore];
+      // console.log(newPoints);
+      // const set = localStorage.setItem('player', JSON.stringify(newScore));
+      const sum = newPoints.reduce((acc, curr) => Number(acc) + Number(curr));
+      localStorage.setItem('player', sum);
+      console.log(sum);
+      // return set ? sum : get;
+      // return addPoints;
+    }
   };
 
   // https://www.horadecodar.com.br/2021/05/10/como-embaralhar-um-array-em-javascript-shuffle/
@@ -87,13 +124,12 @@ class Jogo extends React.Component {
   }
 
   render() {
-    const { results, correta, incorreta } = this.state;
-    const { timerInfos } = this.props;
-    console.log(timerInfos);
+    const { results, correta, incorreta, timer, isDisabled } = this.state;
     const resultsLength = results.length !== 0;
     return (
       <>
         <Header />
+        <h2>{ timer }</h2>
         <main>
           {resultsLength && (
             <div key={ Math.random() }>
@@ -106,7 +142,6 @@ class Jogo extends React.Component {
                   results[0].correct_answer,
                   results[0].incorrect_answers,
                 ).map((answer, index) => (
-                  // eslint-disable-next-line react/jsx-indent
                   <section key={ index } data-testid="answer-options">
                     <button
                       name={ results[0].difficulty }
@@ -116,8 +151,7 @@ class Jogo extends React.Component {
                           ? `${correta}`
                           : `${incorreta}`
                       }
-                      // disabled={ isDisabled }
-                      disabled={ timerInfos }
+                      disabled={ isDisabled }
                       type="button"
                       data-testid={ this.verificaCorreta(
                         results[0].correct_answer,
@@ -143,12 +177,10 @@ Jogo.propTypes = {
 }.isRequired;
 
 const mapStateToProps = (state) => {
-  console.log(state);
-  const { token, timeDown: { isDisabled, isTimeOver } } = state;
-  console.log(isDisabled, isTimeOver);
+  const { token } = state;
   return {
     tokenRandom: token,
-    timerInfos: isDisabled,
+    // timerInfos: isDisabled,
   };
 };
 
