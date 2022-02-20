@@ -104,6 +104,11 @@ class Jogo extends React.Component {
     history.push('/');
   }
 
+  goRanking = () => {
+    const { history } = this.props;
+    history.push('/ranking');
+  }
+
   verificaCorreta(correctAnswer, answer, incorrectAnswers) {
     if (correctAnswer === answer) {
       return 'correct-answer';
@@ -169,6 +174,15 @@ class Jogo extends React.Component {
           >
             Play Again
           </button>
+          <div>
+            <button
+              type="button"
+              onClick={ this.goRanking }
+              data-testid="btn-ranking"
+            >
+              Ranking
+            </button>
+          </div>
         </div>
       </>
     );
