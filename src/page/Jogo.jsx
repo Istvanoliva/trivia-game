@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchAPItest, fetchAsks } from '../service/fetchAPI';
-import { newTokenRedux } from '../redux/actions';
+import { newTokenRedux, userInfos } from '../redux/actions';
 import Header from '../components/Header';
 
 const HARD = 3;
@@ -24,12 +24,8 @@ class Jogo extends React.Component {
   componentDidMount() {
     this.validateToken();
     this.timer();
-    localStorage.setItem('player', [0]);
+    localStorage.setItem('score', 0);
   }
-
-  // componentDidUpdate() {
-  //   this.stop();
-  // }
 
   timer = () => {
     const ONE_SECOND = 1000;
@@ -40,19 +36,9 @@ class Jogo extends React.Component {
         this.setState((prev) => ({ timer: prev.timer - 1 }));
       } else {
         this.setState({ isDisabled: timer === 0 });
-        // const setIntervalID = 5;
-        // if (timer === 0);
-        // clearInterval(setIntervalID);
       }
     }, ONE_SECOND));
   }
-
-  // stop = () => {
-  //   const { timer } = this.state;
-  //   const setIntervalID = 6;
-  //   if (timer === 0);
-  //   clearInterval(setIntervalID);
-  // }
 
   validateToken = async () => {
     const token = await fetchAPItest();
@@ -89,15 +75,13 @@ class Jogo extends React.Component {
     const selectAnswer = target.getAttribute('data-testid').includes('correct');
     if (selectAnswer) {
       const newScore = (DEZ + (timer * this.difficultLevel()));
-      const get = localStorage.getItem('player');
-      const newPoints = [...get, newScore];
-      // console.log(newPoints);
-      // const set = localStorage.setItem('player', JSON.stringify(newScore));
-      const sum = newPoints.reduce((acc, curr) => Number(acc) + Number(curr));
-      localStorage.setItem('player', sum);
-      console.log(sum);
-      // return set ? sum : get;
-      // return addPoints;
+      const get = localStorage.getItem('score');
+      const novosPontos = Number(get) + Number(newScore);
+      localStorage.setItem('score', novosPontos);
+      const getScore = localStorage.getItem('score');
+      console.log(getScore);
+      const { dispatchScore } = this.props;
+      dispatchScore(null, null, getScore, null);
     }
   };
 
@@ -167,6 +151,11 @@ class Jogo extends React.Component {
             </div>
           )}
         </main>
+        <div>
+          {incorreta !== '' && correta !== ''
+            ? <button type="button" data-testid="btn-next">Next</button>
+            : null}
+        </div>
       </>
     );
   }
@@ -178,14 +167,16 @@ Jogo.propTypes = {
 
 const mapStateToProps = (state) => {
   const { token } = state;
+  console.log(state);
   return {
     tokenRandom: token,
-    // timerInfos: isDisabled,
   };
 };
 
 const mapDispatchToProps = (dispatch) => ({
   dispatchToken: () => dispatch(newTokenRedux()),
+  dispatchScore: (name, assertions,
+    score, gravatarEmail) => dispatch(userInfos(name, assertions, score, gravatarEmail)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Jogo);
