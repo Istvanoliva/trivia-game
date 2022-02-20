@@ -18,6 +18,7 @@ class Jogo extends React.Component {
       incorreta: '',
       timer: 30,
       isDisabled: false,
+      questions: 0,
     };
   }
 
@@ -85,6 +86,16 @@ class Jogo extends React.Component {
     }
   };
 
+  nextButton = () => {
+    const { history } = this.props;
+    const LAST_QUESTION = 4;
+    const { questions } = this.state;
+    this.setState((prevState) => ({
+      questions: prevState.questions + 1,
+    }));
+    if (questions === LAST_QUESTION) history.push('/feedback');
+  };
+
   // https://www.horadecodar.com.br/2021/05/10/como-embaralhar-um-array-em-javascript-shuffle/
   asksRandom = (resultsCorrect, incorrectResults) => {
     const answer = [...incorrectResults, resultsCorrect];
@@ -118,39 +129,41 @@ class Jogo extends React.Component {
   }
 
   render() {
-    const { results, correta, incorreta, timer, isDisabled } = this.state;
+    const { results, correta, incorreta, timer, isDisabled, questions } = this.state;
     const resultsLength = results.length !== 0;
     return (
       <>
         <Header />
-        <h2>{ timer }</h2>
+        <h2>{timer}</h2>
         <main>
           {resultsLength && (
             <div key={ Math.random() }>
-              <h4 data-testid="question-category">{results[0].category}</h4>
-              <h3 key={ results[0].question } data-testid="question-text">
-                {results[0].question}
+              <h4 data-testid="question-category">
+                {results[questions].category}
+              </h4>
+              <h3 key={ results[questions].question } data-testid="question-text">
+                {results[questions].question}
               </h3>
               <div>
                 {this.asksRandom(
-                  results[0].correct_answer,
-                  results[0].incorrect_answers,
+                  results[questions].correct_answer,
+                  results[questions].incorrect_answers,
                 ).map((answer, index) => (
                   <section key={ index } data-testid="answer-options">
                     <button
-                      name={ results[0].difficulty }
+                      name={ results[questions].difficulty }
                       onClick={ this.upDateScore }
                       className={
-                        answer === results[0].correct_answer
+                        answer === results[questions].correct_answer
                           ? `${correta}`
                           : `${incorreta}`
                       }
                       disabled={ isDisabled }
                       type="button"
                       data-testid={ this.verificaCorreta(
-                        results[0].correct_answer,
+                        results[questions].correct_answer,
                         answer,
-                        results[0].incorrect_answers,
+                        results[questions].incorrect_answers,
                       ) }
                     >
                       {answer}
@@ -162,9 +175,15 @@ class Jogo extends React.Component {
           )}
         </main>
         <div>
-          {incorreta !== '' && correta !== ''
-            ? <button type="button" data-testid="btn-next">Next</button>
-            : null}
+          {incorreta !== '' && correta !== '' ? (
+            <button
+              type="button"
+              data-testid="btn-next"
+              onClick={ this.nextButton }
+            >
+              Next
+            </button>
+          ) : null}
         </div>
         <div>
           <button
