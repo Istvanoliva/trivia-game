@@ -8,7 +8,7 @@ import rootReducer from '../reducers';
 const persistConfig = {
   key: 'root-trivia',
   storage,
-  whitelist: ['loginRedux'],
+  whitelist: ['loginRedux', 'player'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
