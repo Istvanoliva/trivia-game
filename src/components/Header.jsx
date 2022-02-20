@@ -9,7 +9,8 @@ class Header extends React.Component {
     super();
     this.state = {
       timer: 30,
-      // isDisabled: false,
+      isTimeOver: false,
+      isDisabled: false,
     };
   }
 
@@ -17,23 +18,18 @@ class Header extends React.Component {
     this.timer();
   }
 
-  // componentDidUpdate(_prevProps, prevState) {
-  //   const TIME_LIMIT = 0;
-  //   if (prevState.timer === TIME_LIMIT) {
-  //     this.setState({ timer: 30 });
-  //   }
-  // }
-
   timer = () => {
     const ONE_SECOND = 1000;
-    setInterval(() => {
-      this.setState((prevState) => ({
-        timer: prevState.timer - 1,
-      }));
-    }, ONE_SECOND);
-    const { timer } = this.state;
-    console.log(timer);
-    if (timer === 0) clearInterval();
+    console.log(setInterval(() => {
+      const { timer, isTimeOver, isDisabled } = this.state;
+      if (timer > 0) {
+        this.setState((prevState) => ({ timer: prevState.timer - 1 }));
+      } else {
+        const { dispatchTimer } = this.props;
+        this.setState(({ isDisabled: timer === 0 }));
+        dispatchTimer(isTimeOver, isDisabled);
+      }
+    }, ONE_SECOND));
   }
 
   render() {
@@ -66,7 +62,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchTimer: (payload) => dispatch(timeCountDown(payload)),
+  dispatchTimer: (timeOver, isDisabled) => dispatch(timeCountDown(timeOver, isDisabled)),
 });
 
 Header.propTypes = {

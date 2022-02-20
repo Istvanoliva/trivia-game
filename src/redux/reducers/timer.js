@@ -1,16 +1,16 @@
 import { TIME_COUNT_DOWN } from '../actions';
 
 const INITIAL_STATE = {
-  timer: 30,
+  isTimeOver: false,
   isDisabled: false,
 };
 
-const timeDown = (state = INITIAL_STATE, { type, timer, isDisabled }) => {
+const timeDown = (state = INITIAL_STATE, { type, isTimeOver, isDisabled }) => {
   switch (type) {
   case TIME_COUNT_DOWN:
     return {
       ...state,
-      timer,
+      isTimeOver,
       isDisabled,
     };
   default: return state;

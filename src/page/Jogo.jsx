@@ -52,7 +52,6 @@ class Jogo extends React.Component {
     const timer = 10;
     const selectAnswer = target.getAttribute('data-testid').includes('correct');
     if (selectAnswer) {
-      // const { timer } = this.state;
       const score = (DEZ + (timer * this.difficultLevel()));
       const userInfo = {
         score,
@@ -64,7 +63,6 @@ class Jogo extends React.Component {
       correta: 'green',
     });
   };
-  // localStorage.setItem('player', JSON.stringify(score));
 
   // https://www.horadecodar.com.br/2021/05/10/como-embaralhar-um-array-em-javascript-shuffle/
   asksRandom = (resultsCorrect, incorrectResults) => {
@@ -89,8 +87,9 @@ class Jogo extends React.Component {
   }
 
   render() {
-    const { results, correta, incorreta, dificultyValue } = this.state;
-    console.log(results, dificultyValue);
+    const { results, correta, incorreta } = this.state;
+    const { timerInfos } = this.props;
+    console.log(timerInfos);
     const resultsLength = results.length !== 0;
     return (
       <>
@@ -117,7 +116,8 @@ class Jogo extends React.Component {
                           ? `${correta}`
                           : `${incorreta}`
                       }
-                      // isDisabled={ isDisabled }
+                      // disabled={ isDisabled }
+                      disabled={ timerInfos }
                       type="button"
                       data-testid={ this.verificaCorreta(
                         results[0].correct_answer,
@@ -143,9 +143,12 @@ Jogo.propTypes = {
 }.isRequired;
 
 const mapStateToProps = (state) => {
-  const { token } = state;
+  console.log(state);
+  const { token, timeDown: { isDisabled, isTimeOver } } = state;
+  console.log(isDisabled, isTimeOver);
   return {
     tokenRandom: token,
+    timerInfos: isDisabled,
   };
 };
 

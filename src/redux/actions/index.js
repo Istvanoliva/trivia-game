@@ -57,8 +57,8 @@ export const userInfos = (name, assertions, score, gravatarEmail) => ({
   gravatarEmail,
 });
 
-export const timeCountDown = (timer, isDisabled) => ({
+export const timeCountDown = (isTimeOver, isDisabled) => ({
   type: TIME_COUNT_DOWN,
-  timer,
+  isTimeOver,
   isDisabled,
 });
