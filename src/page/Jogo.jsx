@@ -151,6 +151,11 @@ class Jogo extends React.Component {
             </div>
           )}
         </main>
+        <div>
+          {incorreta !== '' && correta !== ''
+            ? <button type="button" data-testid="btn-next">Next</button>
+            : null}
+        </div>
       </>
     );
   }
