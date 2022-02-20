@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import md5 from 'crypto-js/md5';
 import { fetchAPItest, fetchAsks } from '../service/fetchAPI';
 import { newTokenRedux, userInfos } from '../redux/actions';
 import Header from '../components/Header';
@@ -18,27 +19,32 @@ class Jogo extends React.Component {
       incorreta: '',
       timer: 30,
       isDisabled: false,
+      questions: 0,
     };
   }
 
   componentDidMount() {
     this.validateToken();
     this.timer();
-    localStorage.setItem('score', 0);
+    const { name, gravatarEmail } = this.props;
+    const hash = md5(gravatarEmail).toString();
+    const dadosGravatar = [
+      { name, score: 0, picture: `https://www.gravatar.com/avatar/${hash}` },
+    ];
+    localStorage.setItem('ranking', JSON.stringify(dadosGravatar));
   }
 
   timer = () => {
     const ONE_SECOND = 1000;
-    console.log(setInterval(() => {
-      console.log('interval');
+    setInterval(() => {
       const { timer } = this.state;
       if (timer > 0) {
         this.setState((prev) => ({ timer: prev.timer - 1 }));
       } else {
         this.setState({ isDisabled: timer === 0 });
       }
-    }, ONE_SECOND));
-  }
+    }, ONE_SECOND);
+  };
 
   validateToken = async () => {
     const token = await fetchAPItest();
@@ -62,7 +68,7 @@ class Jogo extends React.Component {
     if (selectLevel === 'hard') return HARD;
     if (selectLevel === 'medium') return MEDIUM;
     if (selectLevel === 'easy') return EASY;
-  }
+  };
 
   upDateScore = ({ target }) => {
     this.setState({
@@ -74,15 +80,23 @@ class Jogo extends React.Component {
     const { timer } = this.state;
     const selectAnswer = target.getAttribute('data-testid').includes('correct');
     if (selectAnswer) {
-      const newScore = (DEZ + (timer * this.difficultLevel()));
-      const get = localStorage.getItem('score');
-      const novosPontos = Number(get) + Number(newScore);
-      localStorage.setItem('score', novosPontos);
-      const getScore = localStorage.getItem('score');
-      console.log(getScore);
-      const { dispatchScore } = this.props;
-      dispatchScore(null, null, getScore, null);
+      const newScore = DEZ + timer * this.difficultLevel();
+      const get = JSON.parse(localStorage.getItem('ranking'));
+      get[0].score += newScore;
+      localStorage.setItem('ranking', JSON.stringify(get));
+      const { dispatchScore, assertions } = this.props;
+      dispatchScore(null, assertions + 1, get[0].score, null);
     }
+  };
+
+  nextButton = () => {
+    const { history } = this.props;
+    const LAST_QUESTION = 4;
+    const { questions } = this.state;
+    this.setState((prevState) => ({
+      questions: prevState.questions + 1,
+    }));
+    if (questions === LAST_QUESTION) history.push('/feedback');
   };
 
   // https://www.horadecodar.com.br/2021/05/10/como-embaralhar-um-array-em-javascript-shuffle/
@@ -102,7 +116,7 @@ class Jogo extends React.Component {
   onclick = () => {
     const { history } = this.props;
     history.push('/');
-  }
+  };
 
   verificaCorreta(correctAnswer, answer, incorrectAnswers) {
     if (correctAnswer === answer) {
@@ -113,39 +127,39 @@ class Jogo extends React.Component {
   }
 
   render() {
-    const { results, correta, incorreta, timer, isDisabled } = this.state;
+    const { results, correta, incorreta, timer, isDisabled, questions } = this.state;
     const resultsLength = results.length !== 0;
     return (
       <>
         <Header />
-        <h2>{ timer }</h2>
+        <h2>{timer}</h2>
         <main>
           {resultsLength && (
             <div key={ Math.random() }>
-              <h4 data-testid="question-category">{results[0].category}</h4>
-              <h3 key={ results[0].question } data-testid="question-text">
-                {results[0].question}
+              <h4 data-testid="question-category">{results[questions].category}</h4>
+              <h3 key={ results[questions].question } data-testid="question-text">
+                {results[questions].question}
               </h3>
               <div>
                 {this.asksRandom(
-                  results[0].correct_answer,
-                  results[0].incorrect_answers,
+                  results[questions].correct_answer,
+                  results[questions].incorrect_answers,
                 ).map((answer, index) => (
                   <section key={ index } data-testid="answer-options">
                     <button
-                      name={ results[0].difficulty }
+                      name={ results[questions].difficulty }
                       onClick={ this.upDateScore }
                       className={
-                        answer === results[0].correct_answer
+                        answer === results[questions].correct_answer
                           ? `${correta}`
                           : `${incorreta}`
                       }
                       disabled={ isDisabled }
                       type="button"
                       data-testid={ this.verificaCorreta(
-                        results[0].correct_answer,
+                        results[questions].correct_answer,
                         answer,
-                        results[0].incorrect_answers,
+                        results[questions].incorrect_answers,
                       ) }
                     >
                       {answer}
@@ -157,9 +171,15 @@ class Jogo extends React.Component {
           )}
         </main>
         <div>
-          {incorreta !== '' && correta !== ''
-            ? <button type="button" data-testid="btn-next">Next</button>
-            : null}
+          {incorreta !== '' && correta !== '' ? (
+            <button
+              type="button"
+              onClick={ this.nextButton }
+              data-testid="btn-next"
+            >
+              Next
+            </button>
+          ) : null}
         </div>
         <div>
           <button
@@ -180,17 +200,24 @@ Jogo.propTypes = {
 }.isRequired;
 
 const mapStateToProps = (state) => {
-  const { token } = state;
-  console.log(state);
+  const {
+    token,
+    player: { name, gravatarEmail, assertions },
+  } = state;
   return {
     tokenRandom: token,
+    name,
+    gravatarEmail,
+    assertions,
   };
 };
 
 const mapDispatchToProps = (dispatch) => ({
   dispatchToken: () => dispatch(newTokenRedux()),
-  dispatchScore: (name, assertions,
-    score, gravatarEmail) => dispatch(userInfos(name, assertions, score, gravatarEmail)),
+  dispatchScore: (name, assertions, score, gravatarEmail) => dispatch(userInfos(
+    name, assertions,
+    score, gravatarEmail,
+  )),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Jogo);

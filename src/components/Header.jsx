@@ -27,7 +27,6 @@ class Header extends React.Component {
 const mapStateToProps = (state) => {
   const { loginRedux: { email, nome } } = state;
   const { player: { score, assertions } } = state;
-  console.log(assertions);
   return {
     userEmailGravatar: email,
     userName: nome,

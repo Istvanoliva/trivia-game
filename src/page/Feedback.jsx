@@ -17,6 +17,7 @@ class Feedback extends Component {
     return (
       <>
         <Header />
+        <h1 data-testid="feedback-text">Parabéns !!!</h1>
         <div>{this.feedBackMessagem()}</div>
       </>
     );
