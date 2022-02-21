@@ -62,3 +62,5 @@ Feedback.propTypes = {
   aksAssertions: PropTypes.number.isRequired,
   history: PropTypes.shape({ push: PropTypes.func.isRequired }),
 }.isRequired;
+
+// Istvan e Yang
